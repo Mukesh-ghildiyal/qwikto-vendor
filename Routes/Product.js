@@ -5,13 +5,14 @@ const {
     editProduct,
     deleteProduct,
 } = require('../controllers/productController');
-const { productUpload } = require('../middleware/upload');
+const upload = require('../middleware/upload');
 const authMiddleware = require('../middleware/authMiddleware');
+
 const router = express.Router();
 
-router.post('/add', authMiddleware, productUpload.single('image'), addProduct);
+router.post('/add', authMiddleware, upload.single('image'), addProduct);
 router.get('/', authMiddleware, getVendorProducts);
-router.put('/edit/:id', authMiddleware, productUpload.single('image'), editProduct);
+router.put('/edit/:id', authMiddleware, upload.single('image'), editProduct);
 router.delete('/delete/:id', authMiddleware, deleteProduct);
 
 module.exports = router;

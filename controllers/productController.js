@@ -1,23 +1,23 @@
 const Product = require('../Models/Product');
+const cloudinary = require('../middleware/cloudinary');
 
 // Add a new product
 exports.addProduct = async (req, res) => {
     const { name, category, price } = req.body;
-    console.log(name, price, category);
-    console.log(req.user.id);
-    console.log(req.file)
 
-    if (!name || !category || !price) {
+    if (!name || !category || !price || !req.file) {
         return res.status(400).json({ message: 'All fields are required, including an image' });
     }
 
     try {
+        const result = await cloudinary.uploader.upload_stream({ folder: 'products' }).end(req.file.buffer);
+
         const product = new Product({
-            vendor: req.user.id, // Assuming vendor authentication is implemented
+            vendor: req.user.id,
             name,
             category,
             price,
-            image: req.file.path,
+            image: result.secure_url,
         });
 
         await product.save();
@@ -56,7 +56,8 @@ exports.editProduct = async (req, res) => {
         product.price = price || product.price;
 
         if (req.file) {
-            product.image = req.file.path;
+            const result = await cloudinary.uploader.upload_stream({ folder: 'products' }).end(req.file.buffer);
+            product.image = result.secure_url;
         }
 
         await product.save();
@@ -84,4 +85,4 @@ exports.deleteProduct = async (req, res) => {
         console.error(err);
         res.status(500).json({ message: 'Server error' });
     }
-};  
+};

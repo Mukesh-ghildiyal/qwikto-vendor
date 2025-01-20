@@ -1,11 +1,12 @@
 const express = require('express');
 const { uploadDocuments } = require('../controllers/documentController');
-const { upload } = require('../middleware/upload');
+const upload = require('../middleware/upload');
 const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
 
 router.post(
-    '/upload', authMiddleware,
+    '/upload',
+    authMiddleware,
     upload.fields([
         { name: 'aadharFront', maxCount: 1 },
         { name: 'aadharBack', maxCount: 1 },
