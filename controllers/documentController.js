@@ -20,7 +20,7 @@ exports.uploadDocuments = async (req, res) => {
 
         // Helper function to upload a file to Cloudinary
         const uploadToCloudinary = async (file) => {
-            const result = await cloudinary.uploader.upload(file.path, {
+            const result = await cloudinary.uploader.upload_stream(file.path, {
                 folder: 'documents',
             });
             return result.secure_url;
